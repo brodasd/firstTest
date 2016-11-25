@@ -19,7 +19,7 @@
 	list-style: none;
 	float: left;
 	margin: 10px;
-	list-style: none;
+	
 }
 
 .pagingUl {
