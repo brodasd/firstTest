@@ -26,6 +26,7 @@ public class BoardDAOImpl extends AbstractDAO<BoardVO, Integer> implements Board
 	public int count() throws Exception {
 		return sqlSession.selectOne(NAME + ".countPaging");
 	}
+	
 
 	public int searchCount(SearchCriteria cri) throws Exception {
 		return sqlSession.selectOne(NAME + ".listSearchCount", cri);

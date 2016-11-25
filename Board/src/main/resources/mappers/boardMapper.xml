@@ -7,9 +7,9 @@
 
 	<insert id="create" parameterType="BoardVO">
 		insert into
-		tbl_board(title,content, writer)
+		tbl_board(title,content, writer,imgsrc )
 		values(#{title}, #{content},
-		#{writer})
+		#{writer},#{imgsrc})
 	</insert>
 
 	<select id="read" resultType="BoardVO">

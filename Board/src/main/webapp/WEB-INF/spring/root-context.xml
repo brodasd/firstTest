@@ -14,7 +14,7 @@
 		<property name="username" value="bit88"></property>
 		<property name="password" value="bit88"></property>
 		<property name="url"
-			value="jdbc:log4jdbc:mysql://192.168.0.14:3306/ironman?useSSL=false&amp;serverTimezone=Asia/Seoul"></property>
+			value="jdbc:log4jdbc:mysql://192.168.0.9:3306/ironman?useSSL=false&amp;serverTimezone=Asia/Seoul"></property>
 	</bean>
 
 
@@ -38,6 +38,7 @@
 
 		<!-- 메소드를 호출하면 자동적으로 설정해줌 데코레이트패턴이라고함. -->
 	</bean>
+ 
 
 	<context:component-scan base-package="org.zerock.persistence"></context:component-scan>
 	<context:component-scan base-package="org.zerock.service"></context:component-scan>

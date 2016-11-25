@@ -25,4 +25,5 @@ public class SearchCriteria extends Criteria {
 	public String toString() {
 		return "SearchCriteria [sType=" + sType + ", keyword=" + keyword + "]";
 	}
+
 }

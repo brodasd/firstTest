@@ -7,6 +7,10 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
 </head>
+
+<%@ include file="../header.jsp"%>
+
+
 <body>
 
 	<style>
@@ -22,31 +26,34 @@
 	list-style: none;
 }
 </style>
-
 	<script src="https://code.jquery.com/jquery-2.2.4.js"
 		integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI="
 		crossorigin="anonymous"></script>
-		
-		
-	<div align="center">
+	<div align="left">
 		<ul class="read">
-			<li>${read.bno}</li>
-			<li>${read.title}</li>
-			<li>${read.writer}</li>
-			<li>${read.content}</li>
-			<li>${read.regdate}</li>
+
+			<li>제목 : ${read.title}</li>
+			<li>작성자 : ${read.writer}</li>
+			<li>내용 : ${read.content}</li>
+			<li>등록 시간 : ${read.regdate}</li>
+			<c:if test="${read.imgsrc ne null}">
+				<img src="show?name=${read.imgsrc}">
+			</c:if>
 		</ul>
 		<h1>댓글들</h1>
 		<ul class="reply">
 		</ul>
 
-		<form action="delete" method="post">
-			<input type="hidden" name="bno" value="${param.bno}">
-			<button>삭제하기</button>
-		</form>
+
+		<button id="dBtn">삭제하기</button>
 		<button id="listBtn">목록가기</button>
 		<button class="uBtn">수정하기</button>
 		<button class="rBtn">댓글 달기</button>
+
+		<form class="deleteBtn" action="delete" method="post">
+			<input type="hidden" name="bno" value="${param.bno}">
+		</form>
+
 
 		<div class="updateBtn">
 			<form action="update" method="post">
@@ -59,9 +66,9 @@
 
 		<div class="replyBtn">
 			<form action="reply" method="post" id="f2">
-				<input type="hidden" name="bno" value="${param.bno}"> 
-				댓글 내용 : <input type="text" name="reply" id="reply"> 
-				댓글 작성자 : <input type="text" name="replyer" id="replyer">
+				<input type="hidden" name="bno" value="${param.bno}"> 댓글 내용
+				: <input type="text" name="reply" id="reply"> 댓글 작성자 : <input
+					type="text" name="replyer" id="replyer">
 
 			</form>
 			<button id="replyAddBtn">댓글 등록</button>
@@ -81,6 +88,11 @@
 			
 			$('#listBtn').on('click', function() { 
 				$('#form').submit(); 
+				});
+			
+
+			$('#dBtn').on('click', function() { 
+				$('.deleteBtn').submit(); 
 				});
 			
 			$(function() {
@@ -113,11 +125,7 @@
 						"http://localhost:8081/reply/view", 
 				 		{bno : bno }, 
 				 		function(data){
-				 		 
-				 		console.log("데이터 호출 성공 ");
-						console.log(data);
-						
-						console.log("-------------------------");
+				 		  
 						$('.reply').empty();
 						$.each(data, function(index, obj){ 
 							
@@ -125,7 +133,8 @@
 							console.log(rno);
 							$('.reply').append('<li >'+ "번호 : " + obj.rno + " 작성자 : " 
 									+ obj.replyer + "<br>댓글내용 : "+ obj.reply+'</li>' 
-									+ '<button class="delBtn" value="'+obj.rno +'">댓글삭제</button>'+'<button id="uptBtn">댓글수정</button>'
+									+ '<button class="delBtn" value="'+obj.rno +'">댓글삭제</button>'
+									+'<button id="replyUptBtn">댓글수정</button>'
 									);
 							 
 							console.log(obj); 
@@ -133,6 +142,7 @@
 				});  
 			};
 			
+ 
 			console.log("=============================start reply===============");
 			printReply(); 
 			
@@ -144,28 +154,25 @@
 						     reply : $('#reply').val(),
 						     replyer : $('#replyer').val()
 						     };  
-				
 				$.post("../reply/addReply", data, function(result) {   
-					
 					console.log("add버튼 2단계");
-					alert(result);   
-					
-					console.log("함수 호출 전"); 
-					printReply(); 
-					
-					console.log("함수 호출 후");
+			 		alert("성공했습니다."); 
+					printReply();  
+					$('#reply').val("");
+					$('#replyer').val("");
 				});  
 			});
 			
 			
 			$('.reply').on('click', ".delBtn",function(event) { 
-				event.preventDefault();
-				alert("click");
+				event.preventDefault(); 
+				
 				
 				var classVal = $(this).val();
-				alert(classVal);
+				/* alert(classVal);
 				console.log("m1의 값"+classVal);  
-				console.log("del버튼 1단계");  
+				
+				console.log("del버튼 1단계");   */
 				
 				   $.ajax({      
 					    
@@ -182,12 +189,49 @@
 				        error:function(e){  
 				        	alert("실패");
 				        	printReply();
-				        	console.log("실패했음 콘솔")            
+				        	console.log("실패했음 콘솔")
+				            
 				        }  
 				    });  
 			});
+			
+			$('.reply').on('click', ".delBtn",function(event) { 
+				event.preventDefault(); 
+				
+				
+				var classVal = $(this).val();
+				/* alert(classVal);
+				console.log("m1의 값"+classVal);  
+				
+				console.log("del버튼 1단계");   */
+				
+				   $.ajax({      
+					    
+				        type:"POST",  
+				        url: "http://localhost:8081/reply/delReply",      
+				        data : {"rno" : classVal},
+				        
+				      	success:function(args){ 
+				        	alert("성공했습니다.");
+				        	$('.reply').empty();
+				        	printReply();       
+				        },
+				  
+				        error:function(e){  
+				        	alert("실패");
+				        	printReply();
+				        	console.log("실패했음 콘솔")
+				            
+				        }  
+				    });  
+			});
+			
+
+			
 		});
 		
 	</script>
 </body>
+
+<%@ include file="../footer.jsp"%>
 </html>
